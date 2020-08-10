@@ -6,11 +6,12 @@ use App\Repository\ProvinciaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass=ProvinciaRepository::class)
  */
-class Provincia
+class Provincia implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -80,5 +81,13 @@ class Provincia
         }
 
         return $this;
+    }
+
+    public function JsonSerialize(){     
+
+        return [
+        'id' => $this->getId(),    
+        'nombre' => $this->getNombre()    
+        ];  
     }
 }
