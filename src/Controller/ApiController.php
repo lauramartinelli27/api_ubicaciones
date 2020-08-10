@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Provincia;
+use App\Entity\Partido;
 
 /**
  * @Route("/api", name="api")
@@ -38,6 +39,24 @@ class ApiController extends AbstractController
 
         }
         return new jsonResponse($pcia);
+       
+      
+    }  
+
+    /**
+     * @Route("/partidosxpcia/{id}", name="_list_partidos", methods={"GET"})
+     */
+    //buscar por un parametro
+    public function listPartidos($id)
+    {
+        
+        //noo se como decirle que el id es el de provincia ¿?
+        $partidos=$this->getDoctrine()->getManager()->getRepository(Partido::class)->findBy( array(), array('nombre' => 'ASC') );
+        if (is_null($partidos)){
+            throw $this->createNotFoundException();
+
+        }
+        return new jsonResponse($partidos);
        
       
     }  
