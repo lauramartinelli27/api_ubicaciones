@@ -24,4 +24,21 @@ class ApiController extends AbstractController
       $pcias=$this->getDoctrine()->getManager()->getRepository(Provincia::class)->findAll();
       return new jsonResponse($pcias);
   }
+
+    /**
+     * @Route("/provincias/{id}", name="_buscar_pciaxid", methods={"GET"})
+     */
+    //buscar por un parametro
+    public function buscarPciaxid($id)
+    {
+        
+        $pcia=$this->getDoctrine()->getManager()->getRepository(Provincia::class)->find($id);
+        if (is_null($pcia)){
+            throw $this->createNotFoundException();
+
+        }
+        return new jsonResponse($pcia);
+       
+      
+    }  
 }
