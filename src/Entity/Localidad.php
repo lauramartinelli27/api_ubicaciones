@@ -4,11 +4,12 @@ namespace App\Entity;
 
 use App\Repository\LocalidadRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass=LocalidadRepository::class)
  */
-class Localidad
+class Localidad implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -55,5 +56,14 @@ class Localidad
         $this->partido = $partido;
 
         return $this;
+    }
+
+    public function JsonSerialize(){     
+
+        return [
+        'id' => $this->getId(),   
+      //  'partido'=> $this->getPartido(),
+        'nombre' => $this->getNombre()    
+        ];  
     }
 }
