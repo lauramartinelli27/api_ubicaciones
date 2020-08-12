@@ -36,6 +36,11 @@ class Partido implements JsonSerializable
      */
     private $localidads;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $nacion_id;
+
     public function __construct()
     {
         $this->localidads = new ArrayCollection();
@@ -108,5 +113,17 @@ class Partido implements JsonSerializable
      //   'provincia_id'=> $this->getProvincia(),
         'nombre' => $this->getNombre()    
         ];  
+    }
+
+    public function getNacionId(): ?string
+    {
+        return $this->nacion_id;
+    }
+
+    public function setNacionId(?string $nacion_id): self
+    {
+        $this->nacion_id = $nacion_id;
+
+        return $this;
     }
 }
