@@ -30,6 +30,11 @@ class Provincia implements JsonSerializable
      */
     private $partidos;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $nacion_id;
+
     public function __construct()
     {
         $this->partidos = new ArrayCollection();
@@ -89,5 +94,17 @@ class Provincia implements JsonSerializable
         'id' => $this->getId(),    
         'nombre' => $this->getNombre()    
         ];  
+    }
+
+    public function getNacionId(): ?string
+    {
+        return $this->nacion_id;
+    }
+
+    public function setNacionId(?string $nacion_id): self
+    {
+        $this->nacion_id = $nacion_id;
+
+        return $this;
     }
 }
