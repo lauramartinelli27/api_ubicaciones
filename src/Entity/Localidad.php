@@ -29,6 +29,11 @@ class Localidad implements JsonSerializable
      */
     private $partido;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $nacion_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,5 +70,17 @@ class Localidad implements JsonSerializable
       //  'partido'=> $this->getPartido(),
         'nombre' => $this->getNombre()    
         ];  
+    }
+
+    public function getNacionId(): ?string
+    {
+        return $this->nacion_id;
+    }
+
+    public function setNacionId(?string $nacion_id): self
+    {
+        $this->nacion_id = $nacion_id;
+
+        return $this;
     }
 }
