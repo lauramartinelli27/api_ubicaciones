@@ -34,6 +34,16 @@ class Localidad implements JsonSerializable
      */
     private $nacion_id;
 
+    /**
+     * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private $latitud;
+
+    /**
+     * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private $longitud;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +90,30 @@ class Localidad implements JsonSerializable
     public function setNacionId(?string $nacion_id): self
     {
         $this->nacion_id = $nacion_id;
+
+        return $this;
+    }
+
+    public function getLatitud(): ?string
+    {
+        return $this->latitud;
+    }
+
+    public function setLatitud(?string $latitud): self
+    {
+        $this->latitud = $latitud;
+
+        return $this;
+    }
+
+    public function getLongitud(): ?string
+    {
+        return $this->longitud;
+    }
+
+    public function setLongitud(?string $longitud): self
+    {
+        $this->longitud = $longitud;
 
         return $this;
     }
