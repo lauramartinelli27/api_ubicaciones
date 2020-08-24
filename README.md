@@ -15,7 +15,7 @@ Métodos
 -/api/localidad/{id} ->getLocalidadxid($id) : lista los datos del idlocalidad ingresado 
 -/api/localidades/{idpartido} -> getLocalidadesxid($idpartido) : lista las localidades para el idpartido ingresado
 -/api/localidades/{idpar}/{idloc} -> getLocalidadxpl($idpar,$idloc) : lista los datos de la localidad, partido ingresados
--/api/localidades/{idcia}/{idpar}{idloc} -> getLocalidadxppl($idpcia,$idpar,$idloc) : lista los datos de la localidad, partido y provincia ingresados VER!!!
+-/api/localidades/{idcia}/{idpar}/{idloc} -> getLocalidadxppl($idpcia,$idpar,$idloc) : lista los datos de la localidad, partido y provincia ingresados 
 
 
 
