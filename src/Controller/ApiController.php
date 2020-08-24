@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Provincia;
 use App\Entity\Partido;
 use App\Entity\Localidad;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/api", name="api")
@@ -17,6 +17,11 @@ use Doctrine\ORM\EntityManager;
 
 class ApiController extends AbstractController
 {
+
+    public function __construct (EntityManagerInterface $em)
+    {
+       $this->em= $em;
+    }
 
   
     
@@ -180,31 +185,28 @@ class ApiController extends AbstractController
      * @Route("/localidades/{idpcia}/{idpartido}/{idlocalidad}", name="_get_localidadxppl", methods={"GET"})
      */
     
-    /*public function getLocalidadxppl($idpcia,$idpartido,$idlocalidad)
+    public function getLocalidadxppl($idpcia,$idpartido,$idlocalidad)
     {
-        
-        //como hago para conectarme a la base de datos desde aca adentro???
+        $conn = $this->em->getConnection();
     
-        /*$sql="select po.id as idpcia,po.nombre as provincia,pa.id as idpartido,pa.nombre as partido,l.id as idlocalidad, l.nombre as localidad from provincia po 
+       $sql="select po.id as idpcia,po.nombre as provincia,pa.id as idpartido,pa.nombre as partido,l.id as idlocalidad, l.nombre as localidad from Provincia po 
         left join partido pa on po.id=pa.provincia_id
         left join localidad l on pa.id=l.partido_id
         where po.id=$idpcia and pa.id=$idpartido and l.id=$idlocalidad";
-        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->getQuery($sql);*/
-        /* $query=[
-            'partido'=>$partido,
-            'id'=>$localidad
-          ];
-        
-         
-        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->findBy($query);   //findBy( array(), array('nombre' => 'ASC') );*/
-       /* if (is_null($localidad)){
-            throw $this->createNotFoundException();
+        $respuesta= $conn->prepare($sql);
+        $respuesta->execute();
+        return new jsonResponse($respuesta->fetchAll());
 
-        }
-        return new jsonResponse($localidad);
-       
-      */
-    //} 
+        /*$conn=$this->getDoctrine()->getManager(); 
+        $sql="select provincia.id as idpcia,provincia.nombre as prov,partido.id as idpartido,partido.nombre as part,localidad.id as idloc, localidad.nombre as loc from App:Provincia provincia join App:Partido partido join App:Localidad localidad localidad.partido_id where provincia.id=:idpcia and partido.id=:idpartido and localidad.id=:idlocalidad";
+        $localidad=$conn->createQuery($sql); //dd($localidad);
+        $localidad->setParameter('idpcia', $idpcia);
+        $localidad->setParameter('idpartido', $idpartido);
+        $localidad->setParameter('idlocalidad', $idlocalidad);
+        $respuesta=$localidad->getResult();
+        return new jsonResponse($respuesta);*/
+           
+    } 
 
 
 //muestra la localidad  por el idpartido e idlocalidad ingresados
