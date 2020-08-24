@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Provincia;
 use App\Entity\Partido;
 use App\Entity\Localidad;
+use Doctrine\ORM\EntityManager;
 
 /**
  * @Route("/api", name="api")
@@ -16,22 +17,24 @@ use App\Entity\Localidad;
 
 class ApiController extends AbstractController
 {
+
+  
     
    //muestra todas las provincias de la tabla
     /**
     * @Route("/provincias", name="_get_provincias", methods={"GET"})
-   */
-  public function getProvincias()
-  {
+    */
+    public function getProvincias()
+    {   
       $pcias=$this->getDoctrine()->getManager()->getRepository(Provincia::class)->findAll();
+
       return new jsonResponse($pcias);
-  }
+    }
 
     //muestra la provincia del id ingresado
     /**
-     * @Route("/provincias/{id}", name="_get_pciaxid", methods={"GET"})
+     * @Route("/provincias/{id}", name="_get_pciaxid", methods={"GET"}, requirements={"id"="\d+"})
      */
-    
     public function getPciaxid($id)
     {
         
@@ -41,53 +44,58 @@ class ApiController extends AbstractController
 
         }
         return new jsonResponse($pcia);
-       
-      
     } 
 
     //muestra la provincia por el nombre ingresado
-    //si dejo provincias no me anda y no entiendo porque?
      /**
-     * @Route("/provincia", name="_get_pciaxnom", methods={"GET"})
+     * @Route("/provincias/{nombre}", name="_get_pciaxnom", methods={"GET"})
      */
-    
-    public function getPciaxnom(Request $request)
+    public function getPciaxnom($nombre)
     {
-        $nombre=$request->query->get('nombre');
+      
         $query=['nombre'=>$nombre];
-
         $pcia=$this->getDoctrine()->getManager()->getRepository(Provincia::class)->findBy($query);
         if (is_null($pcia)){
             throw $this->createNotFoundException();
 
         }
         return new jsonResponse($pcia);
-       
-      
     } 
-
-    
+   
     //muestra todos los partidos de la tabla
     /**
     * @Route("/partidos", name="_get_partidos", methods={"GET"})
     */
-  public function getPartidos()
-  {
+    public function getPartidos()
+    {
       $partidos=$this->getDoctrine()->getManager()->getRepository(Partido::class)->findAll();
       return new jsonResponse($partidos);
-  }
+    }
 
-    //muestra los partidos para una provincia ingresada
+
+    //muestra el partido del idpartido ingresado
     /**
-     * @Route("/partidoss", name="_get_partidosxid", methods={"GET"})
+     * @Route("/partido/{id}", name="_get_partidoxid", methods={"GET"}, requirements={"id"="\d+"})
      */
-    //buscar por un parametro idpcia
-    public function getPartidosxid(Request $request)
+    public function getPpartidoxid($id)
     {
         
-        $provincia=$request->query->get('idpcia'); 
-        $query=['provincia'=>$provincia];
-        
+        $partido=$this->getDoctrine()->getManager()->getRepository(Partido::class)->find($id);
+        if (is_null($partido)){
+            throw $this->createNotFoundException();
+
+        }
+        return new jsonResponse($partido);
+    } 
+
+
+     //muestra los partidos para una povincia ingresada
+    /**
+     * @Route("/partidos/{idpcia}", name="_get_partidosxid", methods={"GET"}, requirements={"idpcia"="\d+"})
+     */
+    public function getPartidosxid($idpcia)
+    {
+        $query=['provincia'=>$idpcia];
         $partidos=$this->getDoctrine()->getManager()->getRepository(Partido::class)->findBy($query, array('nombre' => 'ASC'));   
         if (is_null($partidos)){
             throw $this->createNotFoundException();
@@ -96,25 +104,21 @@ class ApiController extends AbstractController
         return new jsonResponse($partidos);
        
     } 
-    
-    //muestra el partido por el id ingresado
+
+    //muestra el partido por el idpartido e idprovincia ingresado
     /**
-     * @Route("/partido", name="_get_partido", methods={"GET"})
+     * @Route("/partidos/{id}/{idpcia}", name="_get_partidoxpp", methods={"GET"})
      */
-    //buscar por un parametro idpcia,idpartido
-    public function getPartido(Request $request)
+    public function getPartidoxpp($id,$idpcia)
     {
         
-        $provincia=$request->query->get('idpcia'); 
-        $partido=$request->query->get('idpartido');
-
-        $query=[
-            'provincia'=>$provincia,
-            'id'=>$partido
+         $query=[
+            'provincia'=>$idpcia,
+            'id'=>$id
           ];
         
          
-        $partido=$this->getDoctrine()->getManager()->getRepository(Partido::class)->findBy($query);   //findBy( array(), array('nombre' => 'ASC') );
+        $partido=$this->getDoctrine()->getManager()->getRepository(Partido::class)->findBy($query); 
         if (is_null($partido)){
             throw $this->createNotFoundException();
 
@@ -123,6 +127,8 @@ class ApiController extends AbstractController
        
       
     }  
+
+    
  
     //muestra todas las localidades de la tabla
     /**
@@ -134,16 +140,31 @@ class ApiController extends AbstractController
       return new jsonResponse($locs);
     }
 
-    
-   //muestra la localidades de un partido por el id ingresado
-   /**
-    * @Route("/localidadess", name="_get_locxpartido", methods={"GET"})
+
+    //muestra la localidad del idlocalidad ingresado
+    /**
+     * @Route("/localidad/{id}", name="_get_localidadxid", methods={"GET"}, requirements={"id"="\d+"})
     */
-    public function getLocxpartido(Request $request)
+    public function getLocalidadxid($id)
     {
         
-        $partido=$request->query->get('idpar'); 
-        $query=['partido'=>$partido];
+        $localidad=$this->getDoctrine()->getManager()->getRepository(Partido::class)->find($id);
+        if (is_null($localidad)){
+            throw $this->createNotFoundException();
+
+        }
+        return new jsonResponse($localidad);
+    } 
+
+    
+    //muestra la localidades de un partido por el id ingresado
+    /**
+    * @Route("/localidades/{idpartido}", name="_get_localidadesxid", methods={"GET"}, requirements={"idpartido"="\d+"}))
+    */
+    public function getLocalidadesxid($idpartido)
+    {
+        
+        $query=['partido'=>$idpartido];
         
         $localidades=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->findBy($query, array('nombre' => 'ASC'));   
         if (is_null($localidades)){
@@ -154,30 +175,63 @@ class ApiController extends AbstractController
        
     } 
 
-    //muestra la localidad  por el id ingresado
+    //muestra la localidad  por el idprovincia,idpartido e idlocalidad ingresados
     /**
-     * @Route("/localidad", name="_get_localidad", methods={"GET"})
+     * @Route("/localidades/{idpcia}/{idpartido}/{idlocalidad}", name="_get_localidadxppl", methods={"GET"})
      */
     
-    public function getLocalidad(Request $request)
+    /*public function getLocalidadxppl($idpcia,$idpartido,$idlocalidad)
     {
         
-        $partido=$request->query->get('idpar'); 
-        $localidad=$request->query->get('idloc');
-
-        $query=[
+        //como hago para conectarme a la base de datos desde aca adentro???
+    
+        /*$sql="select po.id as idpcia,po.nombre as provincia,pa.id as idpartido,pa.nombre as partido,l.id as idlocalidad, l.nombre as localidad from provincia po 
+        left join partido pa on po.id=pa.provincia_id
+        left join localidad l on pa.id=l.partido_id
+        where po.id=$idpcia and pa.id=$idpartido and l.id=$idlocalidad";
+        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->getQuery($sql);*/
+        /* $query=[
             'partido'=>$partido,
             'id'=>$localidad
           ];
         
          
-        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->findBy($query);   //findBy( array(), array('nombre' => 'ASC') );
+        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->findBy($query);   //findBy( array(), array('nombre' => 'ASC') );*/
+       /* if (is_null($localidad)){
+            throw $this->createNotFoundException();
+
+        }
+        return new jsonResponse($localidad);
+       
+      */
+    //} 
+
+
+//muestra la localidad  por el idpartido e idlocalidad ingresados
+    /**
+     * @Route("/localidades/{idpartido}/{idlocalidad}", name="_get_localidadxpl", methods={"GET"})
+     */
+    
+    public function getLocalidadxpl($idpartido,$idlocalidad)
+    {
+        
+       
+         $query=[
+            'partido'=>$idpartido,
+            'id'=>$idlocalidad
+          ];
+        
+         
+        $localidad=$this->getDoctrine()->getManager()->getRepository(Localidad::class)->findBy($query);   //findBy( array(), array('nombre' => 'ASC') );*/
         if (is_null($localidad)){
             throw $this->createNotFoundException();
 
         }
         return new jsonResponse($localidad);
        
-      
+    
     }  
+
+
 }
+
